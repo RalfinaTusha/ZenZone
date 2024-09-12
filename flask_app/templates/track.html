@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profile - Mood Tracker</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" href="../static/img/logo.jpg" type="image/jpg">
+
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+            height: 100vh;
+        }
+        
+        .container-xl {
+            padding: 20px;
+        }
+
+        .nav-borders .nav-link {
+            color: #555;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            transition: color 0.3s ease-in-out, border-bottom-color 0.3s;
+            border-bottom-width: 0.125rem;
+            border-bottom-style: solid;
+            border-bottom-color: transparent;
+        }
+
+        .nav-borders .nav-link:hover {
+            color: #0061f2;
+            border-bottom-color: #0061f2;
+        }
+
+        .nav-borders .nav-link.active {
+            color: #0061f2;
+            border-bottom-color: #0061f2;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        canvas {
+            padding: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container-xl px-4 mt-4">
+        <!-- Navigation Links -->
+        <nav class="nav nav-borders">
+            <a class="nav-link" href="/">HomePage</a>
+            <a class="nav-link " href="/profile">Profile</a>
+            <a class="nav-link active" href="/trackmood">Interactive Mood Timeline</a>
+            <a class="nav-link" href="/insights">Mood Insights</a>
+            <a class="nav-link" href="/trackmood">Weekly/Monthly Mood Recap</a>
+            <a class="nav-link" href="/trackmood">Mood Calendar View</a>
+        </nav>
+
+        <!-- Mood Timeline Section -->
+        <div class="card mt-4">
+            <h1>Your Mood Timeline</h1>
+            <canvas id="moodChart" width="800" height="400"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart.js -->
+    <script>
+        // Data passed from the Flask backend
+        const dates = {{ dates | tojson }};
+        const moodData = {{ mood_data | tojson }};
+        const sentimentData = {{ sentiment_data | tojson }};
+        
+        // Create the chart
+        const ctx = document.getElementById('moodChart').getContext('2d');
+        const moodChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,  // X-axis labels
+                datasets: [
+                    {
+                        label: 'Mood Rating (1-10)',
+                        data: moodData,
+                        borderColor: 'blue',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'blue',
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        fill: false,
+                        yAxisID: 'y',
+                    },
+                    {
+                        label: 'Sentiment (Positive/Negative)',
+                        data: sentimentData,
+                        borderColor: 'green',
+                        borderWidth: 2,
+                        pointBackgroundColor: function(context) {
+                            let value = context.raw;
+                            return value === 1 ? 'green' : 'red';
+                        },
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        fill: true,
+                        backgroundColor: function(context) {
+                            let value = context.raw;
+                            return value === 1 ? 'rgba(0, 255, 0, 0.3)' : 'rgba(255, 0, 0, 0.3)';
+                        },
+                        yAxisID: 'y1',
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        min: 1,
+                        max: 10,
+                        title: {
+                            display: true,
+                            text: 'Mood Rating (1-10)',
+                            color: '#333',
+                            font: {
+                                size: 14,
+                                weight: '600'
+                            }
+                        }
+                    },
+                    y1: {
+                        position: 'right',
+                        min: -1,
+                        max: 1,
+                        title: {
+                            display: true,
+                            text: 'Sentiment (Positive/Negative)',
+                            color: '#333',
+                            font: {
+                                size: 14,
+                                weight: '600'
+                            }
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Date',
+                            color: '#333',
+                            font: {
+                                size: 14,
+                                weight: '600'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: {
+                                size: 14
+                            },
+                            color: '#333'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <!-- Bootstrap and jQuery -->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

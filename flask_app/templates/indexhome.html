@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href=" ">
+<title>MENTAL HEALTH SUPPORT PLATFORM</title>
+
+<!-- Bootstrap core CSS -->
+<link href="../static/css/bootstrap.min.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="../static/css/custom.css" rel="stylesheet">
+
+<!-- Helper Styles -->
+<link href="../static/css/loaders.css" rel="stylesheet">
+<link href="../static/css/swiper.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../static/css/animate.min.css">
+<link rel="stylesheet" href="../static/css/nivo-lightbox.css">
+<link rel="stylesheet" href="../static/css/nivo_themes/default/default.css">
+<link rel="icon" href="../static/img/logo.jpg" type="image/jpg">
+<!-- Font Awesome Style -->
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+</head>
+<body>
+<div class="loader loader-bg">
+  <div class="loader-inner ball-clip-rotate-pulse">
+    <div></div>
+    <div></div>
+  </div>
+</div>
+
+<!-- Top Navigation -->
+    <nav class="navbar navbar-toggleable-md mb-4 top-bar navbar-static-top sps sps--abv">
+        <div class="container">
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse1" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>  
+      </button>
+      <a class="navbar-brand" href="#">ZEN<span>ZONE </span>of <span>{{loggedUser.first_name}}</span></a>
+      <div class="collapse navbar-collapse" id="navbarCollapse1">
+        <ul class="navbar-nav ml-auto">
+         <li class="nav-item active"> <a class="nav-link" href="#myCarousel">Home <span class="sr-only">(current)</span></a> </li>
+         <li class="nav-item"> <a class="nav-link" href="#about">About</a> </li>
+        <li class="nav-item"> <a class="nav-link" href="/journals">YOUR DAILY JOURNAL</a> </li>
+         
+        <li class="nav-item"> <a class="nav-link" href="/profile">Profile</a> </li>
+        <button class="button-6" role="button"><a href="/logout">Log Out</a></button>
+        </ul>
+      </div>
+            </div>
+    </nav>
+
+    
+<!-- Swiper Silder
+    ================================================== --> 
+<!-- Slider main container -->
+<div class="swiper-container main-slider" id="myCarousel">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide slider-bg-position" style="background:url('../static/img/girls.jpg')" data-hash="slide1">
+      <h2>Shëndeti mendor është një prioritet, jo një privilegj.</h2>
+    </div>
+    <div class="swiper-slide slider-bg-position" style="background:url('../static/img/kids.jpg')" data-hash="slide2">
+      <!-- <h2>Happiness is nothing more than good health and a bad memory</h2> -->
+      <h2>"Mënyra si e shijon njeriu jetën është rezultat i shëndetit mendor të tij." - Dalai Lama</h2>
+    </div>
+  </div>
+  <!-- Add Pagination -->
+  <div class="swiper-pagination"></div>
+  <!-- Add Navigation -->
+  <div class="swiper-button-prev"><i class="fa fa-chevron-left"></i></div>
+  <div class="swiper-button-next"><i class="fa fa-chevron-right"></i></div>
+</div>
+<style>
+  .question-container {
+    display: none;
+  }
+  .question-container.active {
+    display: block;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+  }
+  .modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="container border mb-4 mt-4 p-4">
+  <h1 class="questionnaire-header p-2">Questionnaire about you</h1>
+  <form id="questionnaireForm">
+    {% for question in questions %}
+    <div class="question-container" id="question_{{ question.id }}">
+      <div class="">
+        <p class="bold">{{ question.question }}</p>
+        <div>
+          <input type="radio" id="answer_{{ question.id }}_1" name="question_{{ question.id }}" value="1">
+          <label for="answer_{{ question.id }}_1">Rarely or None of the time</label><br>
+          <input type="radio" id="answer_{{ question.id }}_2" name="question_{{ question.id }}" value="2">
+          <label for="answer_{{ question.id }}_2">Occasionally or a Little of the Time</label><br>
+          <input type="radio" id="answer_{{ question.id }}_3" name="question_{{ question.id }}" value="3">
+          <label for="answer_{{ question.id }}_3">Sometimes or a Moderate Amount of the Time</label><br>
+          <input type="radio" id="answer_{{ question.id }}_4" name="question_{{ question.id }}" value="4">
+          <label for="answer_{{ question.id }}_4">Often or a Good Part of the Time</label><br>
+          <input type="radio" id="answer_{{ question.id }}_5" name="question_{{ question.id }}" value="5">
+          <label for="answer_{{ question.id }}_5">Almost Always or All of the Time</label>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <div class="submit-button" style="display: none;">
+      <button type="submit" style="border: gray solid 1px; background-color: blanchedalmond; padding: 10px 20px;">Submit</button>
+    </div>
+  </form>
+</div>
+
+<div id="resultModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Questionnaire Result</h2>
+    <p id="resultContent"></p>
+    <p>Based on your responses, it seems like you may be experiencing some symptoms of mental health issues.</p>     
+    <p>Feel free to consult with a mental health professional for further guidance.</p>
+  </div>
+</div>
+
+<style>
+  /* Modal Background */
+  .modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+    padding-top: 60px; 
+  }
+
+  /* Modal Content */
+  .modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+  }
+
+  /* Animation */
+  @keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+  }
+
+  /* Close Button */
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* Modal Header */
+  .modal-content h2 {
+    margin-top: 0;
+    color: #333;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+  }
+
+  /* Modal Body */
+  .modal-content p {
+    font-family: 'Arial', sans-serif;
+    color: #555;
+    line-height: 1.6;
+    margin: 10px 0;
+  }
+
+  /* Additional Styling */
+  .modal-content {
+    background: linear-gradient(to right, #ece9e6, #ffffff);
+  }
+
+  .modal-content p#resultContent {
+    font-weight: bold;
+    color: #444;
+  }
+</style>
+
+<script>
+  // Get the modal
+  var modal = document.getElementById('resultModal');
+
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName('close')[0];
+
+  // When the user clicks on <span> (x), close the modal and refresh the page
+  span.onclick = function() {
+    modal.style.display = 'none';
+    window.location.reload(); 
+  }
+
+  // When the user clicks anywhere outside of the modal, close it and refresh the page
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = 'none';
+      window.location.reload();  
+    }
+  }
+
+  // Function to open modal and set the content
+  function openModal(content) {
+    document.getElementById('resultContent').innerHTML = content;
+    modal.style.display = 'block';
+  }
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    let currentQuestion = 0;
+    const questions = document.querySelectorAll(".question-container");
+    const submitButton = document.querySelector(".submit-button");
+    const form = document.getElementById("questionnaireForm");
+    const modal = document.getElementById("resultModal");
+    const span = document.getElementsByClassName("close")[0];
+    const resultContent = document.getElementById("resultContent");
+
+    function showQuestion(index) {
+      questions.forEach((question, i) => {
+        question.classList.toggle("active", i === index);
+      });
+    }
+
+    function handleAnswer(event) {
+      if (event.target.name.startsWith("question_")) {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          showQuestion(currentQuestion);
+        } else {
+          submitButton.style.display = "block";
+        }
+      }
+    }
+
+    form.addEventListener("change", handleAnswer);
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+      const formData = new FormData(form);
+      fetch('/questionnaire', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        resultContent.innerText = Object.entries(data).map(([key, value]) => `${key}: ${value}`).join('\n');
+        modal.style.display = "block";
+      })
+      .catch(error => console.error('Error:', error));
+    });
+
+    span.onclick = function() {
+      modal.style.display = "none";
+      window.location.reload(); 
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+        window.location.reload();  
+      }
+    }
+
+    showQuestion(currentQuestion);
+  });
+</script>
+<section class="blog-sec" id="blog">
+  <div class="container">
+      <div class="row">
+          <div class="col-md-12">
+    <div class="heading text-md-center text-xs-center">
+      <h2><small>Informational Content</small>Our Blog</h2>
+    </div>
+    </div>
+    {%for blog in blogs%}
+
+      <div class="col-md-4 blog-box">
+        <div class="blog-image-block"> <img src="../static/img/{{blog.image}}" alt="" class="img-fluid"> </div>
+        <h3 class="blog-title"><small></small><a href="/blogpost/{{blog.id}}">{{blog.title}}</a></h3>
+        <p class="blog-content">{{blog.short_description}}</p>
+      </div>
+      {%endfor%}
+
+       
+    </div>
+  </div>
+</section>
+
+
+
+ 
+<footer>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-2 col-sm-4">
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">About</a></li>
+        </ul>
+      </div>
+      <div class="col-md-2 col-sm-4">
+        <ul>
+          <li><a href="#">Blog</a></li>
+           <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-md-2 col-sm-4">
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Term and Services</a></li>
+          <li><a href="#">About Burnout</a></li>
+        </ul>
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <h2>About our Blog</h2>
+        <p>To enjoy good health, to bring true happiness to one's family, to bring peace to all, one must first discipline and control one's own mind. If a man can control his mind he can find the way to Enlightenment.</p>
+      </div>
+    </div>
+    <div class="row copy-footer">
+       <div class="col-sm-6 col-md-3 pull-right text-xs-right">Created with <i class="fa fa-heart"></i></div>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap core JavaScript
+    ================================================== --> 
+<!-- Placed at the end of the document so the pages load faster --> 
+<script src="../static/js/jquery.min.js" ></script> 
+<script src="../static/js/bootstrap.min.js"></script> 
+<script src="../static/js/scrollPosStyler.js"></script> 
+<script src="../static/js/swiper.min.js"></script> 
+<script src="../static/js/isotope.min.js"></script> 
+<script src="../static/js/nivo-lightbox.min.js"></script> 
+<script src="../static/js/wow.min.js"></script> 
+<script src="../static/js/core.js"></script> 
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug --> 
+<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+</body>
+</html>
