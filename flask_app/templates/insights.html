@@ -160,7 +160,6 @@
                     <p>Your average mood rating this month is <span class="highlight">{{ avg_mood_rating | round(1) }}/10</span>, and sentiment analysis shows that <span class="highlight">{{ positive_sentiment_percentage | round(1) }}%</span> of your entries are positive.</p>
                 </div>
 
-                <!-- Sentiment Trend Analysis -->
                 <h2>Sentiment Trend Analysis</h2>
                 <p>Your mood seems to improve towards the weekend, and the days with a rating of 7 or higher had predominantly positive sentiment.</p>
 
@@ -168,11 +167,11 @@
                     <p>When you rate your day above 7, the sentiment is <span class="highlight">{{ rate_over_7_percentage | round(1) }}%</span> positive.</p>
                 </div>
 
-                <!-- Personalized Tips Section -->
+                <!-- Personalized Tips  -->
                 <h2>Personalized Tips</h2>
                 <div class="tips-section">
                     <ul id="tipsList">
-                        <!-- Tips will be populated here by JavaScript -->
+                        <!-- Popullohet nga JavaScript -->
                     </ul>
                 </div>
 
@@ -188,185 +187,207 @@
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-    document.getElementById('downloadPDF').addEventListener('click', () => {
-        const { jsPDF } = window.jspdf;
+   document.getElementById('downloadPDF').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
     
-        // Temporarily hide the navigation
-        const nav = document.querySelector('.nav');
-        if (nav) {
-            nav.style.display = 'none';
-        }
+    // Temporarily hide the button
+    const downloadButton = document.getElementById('downloadPDF');
+    if (downloadButton) {
+        downloadButton.style.display = 'none';  // Hide the button
+    }
+
+    // Temporarily hide the navigation
+    const nav = document.querySelector('.nav');
+    if (nav) {
+        nav.style.display = 'none';
+    }
     
      
-        // Create the PDF
         html2canvas(document.querySelector('.container-xl')).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const imgWidth = 210; // A4 width in mm
-            const pageHeight = 295; // A4 height in mm
-            const imgHeight = canvas.height * imgWidth / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 0;
-    
-            // Get current date
-            const today = new Date();
-            const formattedDate = today.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-    
-            // Add a professional header
-             pdf.setFontSize(14);
-            pdf.text('Mood Insights Report', 105, 20, { align: 'center' });
-            pdf.setFontSize(10);
-            pdf.text(`Date: ${formattedDate}`, 105, 30, { align: 'center' });
-            pdf.text('Idea and Realization by: Ralfina Tusha', 105, 40, { align: 'center' });
-            pdf.text('Part of Diploma Project', 105, 50, { align: 'center' });
- // Set the font for the multi-line text
- pdf.setFontSize(8);
-        pdf.setTextColor(0, 0, 128);  
-        pdf.setFont("helvetica", "bold"); // Set font to bold
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgWidth = 200; // A4 width in mm
+    const pageHeight = 295; // A4 height in mm
+    const imgHeight = canvas.height * imgWidth / canvas.width;
+    let heightLeft = imgHeight;
+    let position = 0;
 
-        // Add the multi-line text
-        pdf.text('Zhvillimi dhe Implementimi i një Platforme Web për Mbështetjen e Shëndetit Mendor', 105, 60, { align: 'center' });
-        pdf.text('integruar me algoritmin mbi Sentiment Analysis', 105, 70, { align: 'center' });    
-            // Add the content image
-            pdf.addImage(imgData, 'PNG', 0, 70, imgWidth, imgHeight); // Adjust position for content
-            heightLeft -= pageHeight - 70; // Adjust for header height
-    
-            // Add additional pages if needed
-            while (heightLeft >= 0) {
+    // Get current date
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    // Add header
+    const logoImg = new Image();
+    const qrImg = new Image();
+     logoImg.src = 'https://media.licdn.com/dms/image/v2/D4D0BAQHCDHTnBpCL6Q/company-logo_200_200/company-logo_200_200/0/1666089910946/fakulteti_i_teknologjis_s_informacionit_logo?e=2147483647&v=beta&t=xshmYsUa55ChlAdWU7ufudgQKdEm46rBKNewX6n3E6A'; 
+     qrImg.src = 'https://upload.wikimedia.org/wikipedia/commons/5/5e/QR_Code_example.png'; 
+
+     logoImg.onload = function() {
+        qrImg.onload = function() {
+             pdf.addImage(logoImg, 'PNG', 10, 10, 50, 40);  
+            pdf.addImage(qrImg, 'PNG', 160, 10, 30, 30);  
+
+            pdf.setFontSize(18);
+            pdf.setFont("times", "bold");  
+            pdf.text('MOOD MONTHLY INSIGHT REPORT', 55, 60);  
+            pdf.setFontSize(14);
+            pdf.setTextColor(0, 0, 128);
+            const currentMonth = new Date().toLocaleString('en-US', { month: 'long' });
+            pdf.text(currentMonth.toUpperCase(), 85, 70);  
+
+ 
+            pdf.setFontSize(8);
+            pdf.setTextColor(0, 0, 0);
+            pdf.text(`Generated on: ${formattedDate}`, 160, 45);
+            
+                // Draw a border (rectangle) around the entire page
+                pdf.setDrawColor(0);  // Set border color (black)
+                pdf.setLineWidth(1);  // Set border thickness
+                pdf.rect(5, 5, 200, 287);  // Draw the border (x, y, width, height)
+
+            pdf.addImage(imgData, 'PNG', 5, 70, imgWidth, imgHeight); 
+            heightLeft -= pageHeight - 75; // Adjust for header height
+
+             while (heightLeft >= 0) {
                 position = heightLeft - imgHeight;
                 pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
             }
-    
+
+            // Save the PDF
             pdf.save('Your_Mood_Insights.pdf');
-    
-            // Show the navigation again
-            if (nav) {
-                nav.style.display = 'flex';
-            }
-        });
+        };
+    };
+
+    // Show the navigation again
+    if (nav) {
+        nav.style.display = 'flex';
+    }
+    if (downloadButton) {
+                    downloadButton.style.display = 'block';  // Show the button again
+                }
+ 
     });
+    });
+
     </script>    
     
 
     <!-- Chart.js -->
     <script type="text/javascript">
-        // Function to get the date of the start of the week
-        function getStartOfWeekDate() {
-            const now = new Date();
-            const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + 1));
-            return startOfWeek;
-        }
+        // Function to get the start of the current month
+function getStartOfMonthDate() {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1); // Set date to the first day of the current month
+}
 
-        // Function to format date as yyyy-mm-dd
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
+// Function to format date as yyyy-mm-dd
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
 
-        const today = new Date();
-        const lastWeekStart = new Date(today);
-        lastWeekStart.setDate(today.getDate() - 7);
+const today = new Date();
+const startOfMonth = getStartOfMonthDate();
 
-        const moodData = {{ mood_data | tojson }};
-        const sentimentData = {{ sentiment_data | tojson }};
-        const dates = {{ dates | tojson }};
-        const avgMoodRating = {{ avg_mood_rating | tojson }};
+const moodData = {{ mood_data | tojson }};
+const sentimentData = {{ sentiment_data | tojson }};
+const dates = {{ dates | tojson }};
+const avgMoodRating = {{ avg_mood_rating | tojson }};
 
-        // Filter data for the last week
-        const filteredDates = [];
-        const filteredMoodData = [];
-        
-        dates.forEach((date, index) => {
-            const dateObj = new Date(date);
-            if (dateObj >= lastWeekStart && dateObj <= today) {
-                filteredDates.push(date);
-                filteredMoodData.push(moodData[index]);
+// Filtrimi i të dhënave për muajin aktual
+const filteredDates = [];
+const filteredMoodData = [];
+
+dates.forEach((date, index) => {
+    const dateObj = new Date(date);
+     if (dateObj >= startOfMonth && dateObj <= today) {
+        filteredDates.push(date);
+        filteredMoodData.push(moodData[index]);
+    }
+});
+
+// Popullohet grafiku me Chart.js
+const ctx = document.getElementById('moodChart').getContext('2d');
+const moodChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: filteredDates,
+        datasets: [
+            {
+                label: 'Mood Rating (1-10)',
+                data: filteredMoodData,
+                backgroundColor: function(context) {
+                    let value = context.raw;
+                    return value >= 7 ? 'green' : 'red';
+                },
+                borderColor: 'black',
+                borderWidth: 1,
+                hoverBackgroundColor: function(context) {
+                    let value = context.raw;
+                    return value >= 7 ? 'lightgreen' : 'lightcoral';
+                },
+                hoverBorderColor: 'black',
+                hoverBorderWidth: 2,
+                borderRadius: 5
             }
-        });
-
-        // Populate the chart
-        const ctx = document.getElementById('moodChart').getContext('2d');
-        const moodChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: filteredDates,
-                datasets: [
-                    {
-                        label: 'Mood Rating (1-10)',
-                        data: filteredMoodData,
-                        backgroundColor: function(context) {
-                            let value = context.raw;
-                            return value >= 7 ? 'green' : 'red';
-                        },
-                        borderColor: 'black',
-                        borderWidth: 1,
-                        hoverBackgroundColor: function(context) {
-                            let value = context.raw;
-                            return value >= 7 ? 'lightgreen' : 'lightcoral';
-                        },
-                        hoverBorderColor: 'black',
-                        hoverBorderWidth: 2,
-                        borderRadius: 5
+        ]
+    },
+    options: {
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Date',
+                    color: '#333',
+                    font: {
+                        size: 14,
+                        weight: '600'
                     }
-                ]
+                }
             },
-            options: {
-                scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Date',
-                            color: '#333',
-                            font: {
-                                size: 14,
-                                weight: '600'
-                            }
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        min: 1,
-                        max: 10,
-                        title: {
-                            display: true,
-                            text: 'Mood Rating (1-10)',
-                            color: '#333',
-                            font: {
-                                size: 14,
-                                weight: '600'
-                            }
-                        },
-                        ticks: {
-                            stepSize: 1
-                        }
+            y: {
+                beginAtZero: true,
+                min: 1,
+                max: 10,
+                title: {
+                    display: true,
+                    text: 'Mood Rating (1-10)',
+                    color: '#333',
+                    font: {
+                        size: 14,
+                        weight: '600'
                     }
                 },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                return `Mood Rating: ${tooltipItem.raw}`;
-                            }
-                        }
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: false
+                ticks: {
+                    stepSize: 1
+                }
             }
-        });
+        },
+        plugins: {
+            legend: {
+                display: false
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(tooltipItem) {
+                        return `Mood Rating: ${tooltipItem.raw}`;
+                    }
+                }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
 
-        // Populate the personalized tips dynamically
         const tipsList = document.getElementById('tipsList');
         const tips = [
             'Maintain a regular mood journaling habit to track trends.',

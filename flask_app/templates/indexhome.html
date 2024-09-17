@@ -115,32 +115,180 @@
 </style>
 </head>
 <body>
+ <style>
+    .radio-group {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+    }
 
-<div class="container border mb-4 mt-4 p-4">
-  <h1 class="questionnaire-header p-2">Questionnaire about you</h1>
+    input[type="radio"] {
+      display: none;
+    }
+
+    label {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 2px solid #6e7381;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+      transition: border-color 0.3s, background-color 0.3s;
+    }
+
+    input[type="radio"]:checked + label {
+      background-color: #36a370;
+      border-color: #36a370;
+    }
+
+    input[type="radio"]:checked + label::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: rgb(112, 70, 70);
+    }
+
+
+  /* Add classes for each size */
+.radio-group input.size-large + label,
+.radio-group input.size-large:checked + label {
+  width: 60px;
+  height: 60px;
+  border-width: 3px;
+
+}
+
+.green1{
+   border-color: #008748;
+}
+
+.green{
+    border-color: hsl(152, 37%, 53%);
+}
+
+.red2{
+    border-color: #981a11;
+}
+
+.red{
+    border-color: #cf4444;
+}
+
+
+.radio-group input.size-medium + label,
+.radio-group input.size-medium:checked + label {
+  width: 50px;
+  height: 50px;
+  border-width: 3px;
+}
+
+.radio-group input.green1 + label,
+.radio-group input.green1 :checked + label {
+ border-color: #9ad3b9;
+ background-color: #9ad3b9;
+}
+ 
+.radio-group input.green + label,
+.radio-group input.green :checked + label {
+ border-color: #bfeed8;
+ background-color: #bfeed8;
+
+}
+
+.radio-group input.red + label,
+.radio-group input.red :checked + label {
+ border-color: rgb(219, 157, 157);
+ background-color: rgb(219, 157, 157);
+
+}
+
+.radio-group input.red2 + label,
+.radio-group input.red2 :checked + label {
+ border-color: rgb(206, 113, 113);
+ background-color: rgb(204, 127, 127);
+
+}
+
+.radio-group input.nude + label,
+.radio-group input.nude :checked + label {
+ border-color:lightgray;
+ background-color: lightgray;
+
+}
+
+.radio-group input.size-small + label,
+.radio-group input.size-small:checked + label {
+  width: 40px;
+  height: 40px;
+  border-width: 2px;
+}
+
+input[type="radio"] + label {
+  display: inline-block;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+input[type="radio"]:checked + label {
+  background-color: #36a370;
+  border-color: #36a370;
+}
+
+input[type="radio"]:checked + label::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+ </style>
+
+<div class="container border mb-4 mt-4 p-4" style="border-radius: 20px; border-color: rgb(180, 177, 177);">
+  <h1 class="questionnaire-header p-2" style="margin-left:260px">Questionnaire about you</h1>
   <form id="questionnaireForm">
     {% for question in questions %}
     <div class="question-container" id="question_{{ question.id }}">
       <div class="">
-        <p class="bold">{{ question.question }}</p>
-        <div>
-          <input type="radio" id="answer_{{ question.id }}_1" name="question_{{ question.id }}" value="1">
-          <label for="answer_{{ question.id }}_1">Rarely or None of the time</label><br>
-          <input type="radio" id="answer_{{ question.id }}_2" name="question_{{ question.id }}" value="2">
-          <label for="answer_{{ question.id }}_2">Occasionally or a Little of the Time</label><br>
-          <input type="radio" id="answer_{{ question.id }}_3" name="question_{{ question.id }}" value="3">
-          <label for="answer_{{ question.id }}_3">Sometimes or a Moderate Amount of the Time</label><br>
-          <input type="radio" id="answer_{{ question.id }}_4" name="question_{{ question.id }}" value="4">
-          <label for="answer_{{ question.id }}_4">Often or a Good Part of the Time</label><br>
-          <input type="radio" id="answer_{{ question.id }}_5" name="question_{{ question.id }}" value="5">
-          <label for="answer_{{ question.id }}_5">Almost Always or All of the Time</label>
+        <p class="bold" style="
+        color: #36a370;
+        padding: 20px;
+        font-size: larger;
+        font-family: 'Montserrat';
+        text-align: center;  
+      ">{{ question.question }}</p>
+        <div class="radio-group">
+          <input type="radio" id="answer_{{ question.id }}_1" name="question_{{ question.id }}" value="1" class="size-large green1"  >
+          <label for="answer_{{ question.id }}_1"> </label><br>
+        
+          <input type="radio" id="answer_{{ question.id }}_2" name="question_{{ question.id }}" value="2" class="size-medium green">
+          <label for="answer_{{ question.id }}_2"> </label><br>
+        
+          <input type="radio" id="answer_{{ question.id }}_3" name="question_{{ question.id }}" value="3" class="size-small nude">
+          <label for="answer_{{ question.id }}_3"> </label><br>
+        
+          <input type="radio" id="answer_{{ question.id }}_4" name="question_{{ question.id }}" value="4" class="size-medium red">
+          <label for="answer_{{ question.id }}_4"> </label><br>
+        
+          <input type="radio" id="answer_{{ question.id }}_5" name="question_{{ question.id }}" value="5" class="size-large red2">
+          <label for="answer_{{ question.id }}_5"> </label>
         </div>
+        
       </div>
     </div>
     {% endfor %}
-    <div class="submit-button" style="display: none;">
-      <button type="submit" style="border: gray solid 1px; background-color: blanchedalmond; padding: 10px 20px;">Submit</button>
-    </div>
+    <div class="submit-button" style="display: none; margin-left: 50px;">
+      <button type="submit" style="border: #36a370 solid 1px;background-color: rgb(54 163 112);padding: 10px 60px;margin-left:380px;margin-top: 30px;color: white;font-family: 'Montserrat';border-radius: 20px; ">Submit</button>    </div>
   </form>
 </div>
 
@@ -148,13 +296,15 @@
   <div class="modal-content">
     <span class="close">&times;</span>
     <h2>Questionnaire Result</h2>
-    <p id="resultContent"></p>
+    <p id="resultContent">Your custom result content will appear here.</p>
     <p>Based on your responses, it seems like you may be experiencing some symptoms of mental health issues.</p>     
     <p>Feel free to consult with a mental health professional for further guidance.</p>
+    <button class="close-btn">Close</button>
   </div>
 </div>
 
-<style>
+
+<!-- <style>
   /* Modal Background */
   .modal {
     display: none; 
@@ -230,8 +380,111 @@
     font-weight: bold;
     color: #444;
   }
-</style>
-
+</style> -->
+<style>/* General modal styling */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; 
+    z-index: 1000; /* On top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent background */
+  }
+  
+  /* Modal content box */
+  .modal-content {
+    background-color: #f5f5f5; /* Soft nude tone */
+    margin: 10% auto; /* Centered */
+    padding: 40px;
+    border: none;
+    border-radius: 15px;
+    width: 60%;
+    max-width: 600px;
+    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.2);
+    font-family: 'Montserrat', sans-serif;
+    color: #333; /* Dark text for readability */
+    position: relative;
+    animation: fadeIn 0.4s ease-out; /* Smooth fade-in effect */
+  }
+  
+  /* Fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Close button styling */
+  .modal-content .close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .modal-content .close:hover {
+    color: #36a370; /* Matches the green accent color */
+  }
+  
+  /* Header */
+  .modal-content h2 {
+    font-size: 28px;
+    color: #36a370; /* Accent color */
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  
+  /* Result text */
+  #resultContent {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #6e7381; /* Softer grey tone */
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Additional text */
+  .modal-content p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #6e7381;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  /* Button styling */
+  .modal-content .close-btn {
+    display: block;
+    background-color: #36a370;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 20px auto 0;
+    text-align: center;
+  }
+  
+  .modal-content .close-btn:hover {
+    background-color: #2c8c5d;
+  }
+  </style>
 <script>
   // Get the modal
   var modal = document.getElementById('resultModal');
@@ -379,10 +632,10 @@
 </footer>
 
 <!-- Bootstrap core JavaScript
-    ================================================== --> 
+    ===========================================query.min.js" ></script> 
+<script src="../static/js/b======= --> 
 <!-- Placed at the end of the document so the pages load faster --> 
-<script src="../static/js/jquery.min.js" ></script> 
-<script src="../static/js/bootstrap.min.js"></script> 
+<script src="../static/js/jootstrap.min.js"></script> 
 <script src="../static/js/scrollPosStyler.js"></script> 
 <script src="../static/js/swiper.min.js"></script> 
 <script src="../static/js/isotope.min.js"></script> 

@@ -1,36 +1,41 @@
 from flask_app import app
-from flask import jsonify, render_template, redirect, session, request, flash
+from flask import jsonify, logging, render_template, redirect, session, request, flash
 from flask_app.models.user import User
 from flask_app.models.blogs import Blog
 from flask_app.models.diagnosis import Diagnosis
 from flask_app.models.logs import Log
 from flask_bcrypt import Bcrypt
-from datetime import datetime
+from datetime import datetime, time
 import datetime
 from flask_app.config.mysqlconnection import connectToMySQL
 import requests
+import time
 
 from flask_mail import Mail, Message
 from random import randint
 from dotenv import load_dotenv
 import os
+from apscheduler.schedulers.background import BackgroundScheduler
+
+ 
+
 
 load_dotenv()
-
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT'))
 app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS') == 'True'
 app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
-
-
 mail = Mail(app)
+scheduler = BackgroundScheduler()
 
-def verify_email(api_key, email):
+ 
+
+def verify_email(api_key, email):#Funksioni per verifikimin e emailit nepermjet API te EmailListVerify
     url = f'https://apps.emaillistverify.com/api/verifyEmail?secret={api_key}&email={email}'
-    response = requests.get(url)
-    return response.text
+    response = requests.get(url) #Therrasim API-n me metoden GET
+    return response.text #Kthejme pergjigjen e API-s
   
 
 
@@ -79,8 +84,9 @@ def index():
             user_count = User.number_of_users()
             monthly_average=User.monthly_average_of_journals_per_user()
             active_users=User.active_users()
+            low_mood_users=User.low_mood_users()
 
-            return render_template('indexadminn.html', user_count=user_count, monthly_average=monthly_average, active_users=active_users)
+            return render_template('indexadminn.html', user_count=user_count, monthly_average=monthly_average, active_users=active_users, low_mood_users=low_mood_users)
         return redirect('/dashboard')
     return redirect('/homepage')
 
@@ -110,10 +116,10 @@ def register():
     if not User.validate_user(request.form):
         return redirect('/')
     
-    # Generate verification code
-    verification_code = randint(100000, 999999)  # 6-digit random code
+    #Gjeneroj nje kod verifikimi me 6 shifra unik
+    verification_code = randint(100000, 999999)  
     
-    # Temporarily store user data
+    # Ruaj te dhenat e perdoruesit ne session perkohesisht derisa te verifikohet emaili
     session['user_data'] = {
         'first_name': request.form['first_name'],
         'last_name': request.form['last_name'],
@@ -122,21 +128,19 @@ def register():
         'confirm_password': bcrypt.generate_password_hash(request.form['confirm_password']),
         'age': request.form['age'],
         'role': 'user',
-        'verification_code': verification_code,  # Store verification code
+        'verification_code': verification_code, 
      }
     
-    # Call the email verification API
-    api_key = os.getenv('API_KEY')
-    email = request.form['email']
-    result = verify_email(api_key, email)
+    # Therras funksionin verify_email  per te verifikuar emailin nepermjet API te EmailListVerify
+    api_key = os.getenv('API_KEY') # API key e EmailListVerify i ruajtur ne file .env
+    email = request.form['email']# Emaili i perdoruesit qe do te verifikohet
+    result = verify_email(api_key, email)# Rezultati i verifikimit
 
     if result == "ok":
-        send_verification_email(email, verification_code)      
-        flash('A verification code has been sent to your email. Please enter the code to complete registration.', 'success')
-        return redirect('/verify')
-
-    flash('Your email is not valid!', 'emailSignUp')
-    return redirect(request.referrer)
+        send_verification_email(email, verification_code)      # Dergojme emailin me kodin verifikues
+        return redirect('/verify')# Nese emaili eshte valid, shkojme ne faqen verify.html per te verifikuar emailin
+    flash('Emaili juaj nuk eshte valid. Na vjen keq!', 'emailSignUp')# Nese emaili nuk eshte valid, shfaqim nje mesazh gabimi
+    return redirect(request.referrer)# Kthehemi ne faqen e regjistrimit
 
 
 def send_verification_email(email, code):
@@ -144,27 +148,21 @@ def send_verification_email(email, code):
     msg.body = f'Your verification code is: {code}'
     mail.send(msg)
 
+
 @app.route('/verify', methods=['GET', 'POST'])
 def verify():
     if request.method == 'POST':
         user_data = session.get('user_data')
         if user_data:
-            entered_code = request.form['verification_code']
-            
+            entered_code = request.form['verification_code']          
             if user_data['verification_code'] == int(entered_code):
-                user_id = User.create_user(user_data)
-                
-                session.pop('user_data', None)
-                
+                user_id = User.create_user(user_data)               
+                session.pop('user_data', None)               
                 session['user_id'] = user_id
-                session['role'] = 'user'
-            
-                
-                flash('Your account has been successfully verified and created!', 'success')
+                session['role'] = 'user'               
                 return redirect('/')
             else:
-                flash('Invalid verification code. Please try again.', 'error')
-    
+                flash('Kodi i verifikimit nuk eshte i sakte ju lutem provojeni perseri!', 'error') 
     return render_template('verify.html')
 
 
@@ -261,9 +259,7 @@ def questionnaire():
     if 'user_id' not in session:
         return redirect('/')
     
-    #User.delete_answers({'user_id': session['user_id']})
     user_id = session['user_id']
-    
     for key, value in request.form.items():
         if key.startswith('question_'):
             question_id = key.split('_')[1]
@@ -274,13 +270,9 @@ def questionnaire():
                 'answer': answer
             }
             User.add_answer(data)
-    
-     
     total_score = 0
     user_answers = User.get_answers_by_user_id({'user_id': user_id})
- 
     total_score = sum(answer['answer'] for answer in user_answers)
-
     diagnosis = {}
     if total_score == 0:
         diagnosis['Status'] = 'No significant mental health concerns detected.'
@@ -292,6 +284,7 @@ def questionnaire():
         diagnosis['Overall Assessment'] = 'Moderate level of mental health concerns detected. Consultation with a mental health professional is recommended.'
     else:
         diagnosis['Overall Assessment'] = 'High level of mental health concerns detected. Immediate professional help is advised.'
+
 
     diagnosis_str = '\n'.join(f"{k}: {v}" for k, v in diagnosis.items())
     data = {'user_id': user_id, 'diagnosis': diagnosis_str}
@@ -312,4 +305,76 @@ def blogs():
     blogs = Blog.get_all_blogposts()
     return render_template('blogs.html',blogs = blogs)
 
+@app.route('/update_reminder', methods=['POST'])
+def update_reminder():
+    remind_status = request.form.get('remind')
+
+    if 'user_id' in session:
+        user_id = session['user_id']
+        user = User.get_answers_by_user_id({'user_id': user_id})
+        if user:
+            data = {
+                'id': user_id,
+                'remind': remind_status
+            }
+            User.update_reminder(data)
+            new_log_data = {
+            'id':  session['user_id'],
+            'log': 'User updated the reminder status',
+            'created_at': datetime.now()
+            }
+            Log.create_log(new_log_data)
+            send_daily_reminders()
+            return redirect (request.referrer)
+           
+ 
+
+def send_reminder_email(email, name):
+    msg = Message(
+        subject='Reminder: Journal Entry Required',
+        recipients=[email],
+        html=(
+            f"""
+            <html>
+              <body>
+                <div style="font-family: Arial, sans-serif; color: #333;">
+                  <h2 style="color: #4CAF50;">Dear {name},</h2>
+                  <p>This is a friendly reminder that it's time to enter your daily journal entry. Maintaining your journal is an essential part of your mental wellness journey, and your regular entries help us provide you with better insights and support.</p>
+                  
+                  <p style="font-weight: bold;">Please take a moment to log in and record your thoughts and experiences for today.</p>
+                  
+                  <p>If you have any questions or need assistance, please do not hesitate to reach out to our support team.</p>
+                  
+                  <p>Thank you for your continued commitment to your well-being.</p>
+                  <p>Best regards,<br>
+                  The ZenZone Team<br>
+                  <a href="mailto:zenzone@example.com">zenzone@example.com</a><br>
+                  <a href="https://www.zenzone.com">www.zenzone.com</a></p>
+                  
+                  <img src="https://cdn.prod.website-files.com/64a593f0e89d3a52475b043e/64a5942a38b990c2af427e2e_zenzone-black.png" alt="ZenZone Logo" style="width: 150px;"/>
+                </div>
+              </body>
+            </html>
+            """
+        )
+    )
+    mail.send(msg)
+
+
+
+
+def send_daily_reminders():
+    users =User.users_to_remind()
+    for user in users:
+        send_reminder_email(user['email'], user['first_name'])
+
+
+def send_daily_reminders():
+    batch_size = 100
+    users =User.users_to_remind()
+    for i in range(0, len(users), batch_size):
+        batch = users[i:i+batch_size]
+        for user in batch:
+            send_reminder_email(user['email'], user['first_name'])
+        time.sleep(5)  # Shmanget overload-i i serverit
  

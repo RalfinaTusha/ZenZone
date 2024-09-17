@@ -1,472 +1,287 @@
- 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Main Style Sheet -->
-    <link rel="stylesheet" href="main.css" />
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.13.1/css/all.css"
-      integrity="sha384-xxzQGERXS00kBmZW/6qxqJPyxW3UR0BPsL4c8ILaIWXva5kFi7TxkIIaMiKtqV1Q"
-      crossorigin="anonymous"
-    />
+    <title>ZenZone Journal</title>
+
     <!-- Google Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-      rel="stylesheet"
-    />
-    <title>ZenZone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
     <style>
-        /* My Starter Template */
+      /* Global Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background: url('../img/kids.jpg');
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+      }
 
-html {
-  margin: 0;
-  padding: 0;
-  scroll-behavior: smooth;
-}
+      body {
+        font-family: 'Montserrat', sans-serif;
 
-body {
-  font-family: 'Space Mono', monospace;
-  line-height: 1.6;
-  background: rgba(175, 238, 238, 0.3);
-  color: lightcoral;
-  margin: 0 auto;
-  padding: 0;
-  max-width: 900px;
-}
+         background-image: url('../static/img/people.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-position: center;
+        color: #485b4b;
+         margin: 0 auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-/* Global Typography */
+      header {
+        margin-top: 20px;
+        text-align: center;
+      }
 
-h1 {
-  font-size: 3rem;
-}
+      header h1 {
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: #4a4747;
+        letter-spacing: 2px;
+        font-family: 'Montserrat', sans-serif;
+      }
 
-h2 {
-  font-size: 2rem;
-}
+      nav {
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+      }
 
-h3 {
-  font-size: 1.5rem;
-}
+      nav a {
+        text-decoration: none;
+        color: #4a4747;
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
 
-p {
-  font-size: 1rem;
-}
+      nav a:hover {
+        background-color: #d2d0cb;
+      }
 
-form,
-textarea {
-  font-size: 1rem;
-}
+      /* Main Form Styling */
+      .journal-section {
+        width: 100%;
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+      }
 
-button {
-  display: block;
-  font-size: 1.2rem;
-  padding: 0.5em 1em;
-  border: none;
-  background-color: aquamarine;
-  color: #0a2472;
-  font-family: 'Space Mono', monospace;
-}
+      .journal-label {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        color: #565656;
+      }
 
-/* Section Container Positions, Spacing, Utilities */
+      .entry-text-title,
+      .entry-text-box {
+        width: 100%;
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #c7c7c7;
+        background-color: #f9f9f9;
+        font-size: 1rem;
+        margin-bottom: 20px;
+        transition: border-color 0.3s;
+      }
 
-header {
-  text-align: center;
-  margin: 1em auto;
-}
+      .entry-text-title:focus,
+      .entry-text-box:focus {
+        border-color: #5d7752;
+      }
 
-.section {
-  padding: 1em 1em;
-  width: 100%;
-  margin: 1em auto;
-}
+      .entry-text-box {
+        height: 200px;
+        resize: none;
+      }
 
-.container {
-  width: 100%;
-  margin: 0 auto;
-  padding: 1em 1em;
-}
+      .mood-radio {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        justify-content: center;
+      }
 
-.container-row {
-  width: 90%;
-  margin: 0 auto;
-}
+      .mood-radio input {
+        display: none;
+      }
 
-/* Button Standard */
+      .mood-radio label {
+        background-color: #eae7e2;
+        color: #333;
+        padding: 8px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
 
-.btn-main,
-.btn-light,
-.btn-dark {
-  display: block;
-  padding: 0.6rem 2rem;
-  margin: 1rem;
-  transition: all 0.1s;
-  border: none;
-  border-radius: 2px;
-  cursor: pointer;
-}
+      .mood-radio input:checked + label {
+        background-color: #4a4747;
+        color: white;
+      }
 
-.btn-main {
-  color: lightgoldenrodyellow;
-  background-color: lightcoral;
-}
+      .mood-radio label:hover {
+        background-color: #7d7a7a;
+        color: #fff;
+      }
 
-.btn-light {
-  color: #0a2472;
-  background-color: white;
-}
+      /* Submit Button */
+      .btn-main {
+        width: 100%;
+        padding: 15px;
+        font-size: 1.1rem;
+        background-color: #4a4747;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
 
-.btn-dark {
-  color: white;
-  background-color: #0a2472;
-}
+      .btn-main:hover {
+        background-color: #5d7752;
+      }
 
-button[class^='btn-']:hover,
-a[class^='btn-']:hover,
-input[class^='btn-']:hover {
-  background-color: lightgoldenrodyellow;
-  color: lightcoral;
-  font-weight: 700;
-  transform: scale(1.08);
-}
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
 
-/* Cute Navigation Bar */
+      .modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 60%;
+      }
 
-nav {
-  background-color: lightcoral;
-  padding: 1em;
-  text-align: center;
-}
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
 
-nav a {
-  color: lightgoldenrodyellow;
-  font-family: 'Space Mono', monospace;
-  font-size: 1.2rem;
-  text-decoration: none;
-  margin: 0 1rem;
-  padding: 0.5rem 1rem;
-  transition: background-color 0.3s, color 0.3s;
-  border-radius: 4px;
-}
-
-nav a:hover {
-  background-color: lightgoldenrodyellow;
-  color: lightcoral;
-}
-
-/* Project Starts Here */
-
-/* Journal Entry Section */
-
-/* Title */
-
-.entry-text-title {
-  width: 20em;
-  margin: 1em auto;
-  padding: 1em;
-  border-radius: 2px;
-  border: unset;
-  background-color: lightgoldenrodyellow;
-  font-family: 'Space Mono', monospace;
-}
-
-.entry-text-title:focus {
-  outline-color: lightcoral;
-  font-family: 'Space Mono', monospace;
-  color: lightcoral;
-  font-size: 1rem;
-}
-
-.entry-text-title::placeholder {
-  color: lightcoral;
-  font-family: 'Space Mono', monospace;
-  font-size: 1rem;
-}
-
-.entry-text-title::-ms-value {
-  color: lightcoral;
-  font-family: 'Space Mono', monospace;
-  font-size: 1rem;
-}
-
-/* Text Box */
-
-.container-row-journal {
-  display: flex;
-  justify-content: center;
-}
-
-.entry-form {
-  max-width: 100%;
-  margin: 0 auto;
-}
-
-.journal-label {
-  display: block;
-  line-height: 1.6;
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-
-.entry-text-box {
-  width: 100%;
-  height: 20em;
-  margin: 1em auto;
-  padding: 1em;
-  border-radius: 2px;
-  border: unset;
-  background-color: lightgoldenrodyellow;
-  font-family: 'Space Mono', monospace;
-}
-
-@media (min-width: 769px) {
-  .entry-text-box {
-    width: 40em;
-    height: 20em;
-    margin: 1em auto;
-    padding: 1em;
-    border-radius: 2px;
-    border: unset;
-    background-color: lightgoldenrodyellow;
-    font-family: 'Space Mono', monospace;
-  }
-}
-
-.entry-text-box:focus {
-  outline-color: lightcoral;
-  font-family: 'Space Mono', monospace;
-  color: lightcoral;
-  font-size: 1rem;
-}
-
-.entry-text-box::placeholder {
-  color: lightcoral;
-  font-family: 'Space Mono', monospace;
-  font-size: 1rem;
-}
-
-.entry-submit-btn {
-  margin: 0;
-}
-
-/* Journal Results Section */
-
-.sectionEntryResults {
-  width: 100%;
-  margin: 0 auto;
-}
-
-.entryResultRow {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.single-entry-div {
-  max-width: 100%;
-  margin: 1em auto;
-  padding: 1em 1em;
-}
-
-.single-entry-date {
-  background-color: lightgoldenrodyellow;
-  width: 100%;
-}
-
-.heading-results {
-  text-align: center;
-  text-decoration: underline;
-  text-decoration-color: lightgoldenrodyellow;
-}
-
+      .close:hover {
+        color: #000;
+      }
     </style>
   </head>
-  <body>
-    <header><h1 class="title">My Personal Journal</h1></header>
 
-     <nav>
-      <a href="/">Homepage</a>
-      <a href="/trackmood">Track Your Mood</a>
+  <body>
+    <!-- Header -->
+    <header>
+      <h1>ZenZone Journal</h1>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav>
+      <a href="/">Home</a>
+      <a href="/trackmood">Track Mood</a>
       <a href="/blogs">Blogs</a>
       <a href="/logout">Logout</a>
     </nav>
-    {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-      <ul class="flash-messages">
-        {% for category, message in messages %}
-          <li class="{{ category }}">{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
+
     <!-- Journal Entry Section -->
-    <section class="section journal-section">
-      <div class="container">
-        <div class="container-row container-row-journal">
-          <div class="container-item container-item-journal">
-            <form id="journalForm" action="/journal/new" method="POST">
-              <label for="entry-title" class="journal-label">Entry Title</label>
-              <input
-                type="text"
-                name="entry-title"
-                id="entry-title"
-                class="entry-text-title"
-                placeholder="Name of entry ✏️"
-              />
-              <label for="entry" class="journal-label">Today's Entry</label>
-              <textarea
-                name="description"
-                id="journalEntry"
-                class="entry-text-box"
-                placeholder="What's on your mind today? 💭"
-              ></textarea>
-              <label for="mood" class="journal-label">How did you feel today?</label>
-              <br>
-              <br>
-              <div>
-                <input type="radio" id="mood1" name="mood" value="1">
-                <label for="mood1">1</label>
-                <input type="radio" id="mood2" name="mood" value="2">
-                <label for="mood2">2</label>
-                <input type="radio" id="mood3" name="mood" value="3">
-                <label for="mood3">3</label>
-                <input type="radio" id="mood4" name="mood" value="4">
-                <label for="mood4">4</label>
-                <input type="radio" id="mood5" name="mood" value="5">
-                <label for="mood5">5</label>
-                <input type="radio" id="mood6" name="mood" value="6">
-                <label for="mood6">6</label>
-                <input type="radio" id="mood7" name="mood" value="7">
-                <label for="mood7">7</label>
-                <input type="radio" id="mood8" name="mood" value="8">
-                <label for="mood8">8</label>
-                <input type="radio" id="mood9" name="mood" value="9">
-                <label for="mood9">9</label>
-                <input type="radio" id="mood10" name="mood" value="10">
-                <label for="mood10">10</label>
-              </div>
-              <br>
-              <button
-              type="submit"
-              name="journal-submit-btn"
-              id="journal-submit-btn"
-              class="btn-main entry-submit-btn"
-            >
-              Submit  
-            </button>
-            
+    <section class="journal-section">
+      <form id="journalForm" action="/journal/new" method="POST">
+        <label for="entry-title" class="journal-label">Entry Title</label>
+        <input
+          type="text"
+          name="entry-title"
+          id="entry-title"
+          class="entry-text-title"
+          placeholder="Name your entry "
+        />
 
+        <label for="journalEntry" class="journal-label">Today's Entry</label>
+        <textarea
+          name="description"
+          id="journalEntry"
+          class="entry-text-box"
+          placeholder="What's on your mind today? 🌿"
+        ></textarea>
 
-            </form>
+        <label for="mood" class="journal-label">How did you feel today?</label>
+        <div class="mood-radio" style="margin-top: 20px;margin-bottom: 20px;">
+          <div>
+            <input type="radio" id="mood1" name="mood" value="1">
+            <label for="mood1">1</label>
+            <input type="radio" id="mood2" name="mood" value="2">
+            <label for="mood2">2</label>
+            <input type="radio" id="mood3" name="mood" value="3">
+            <label for="mood3">3</label>
+            <input type="radio" id="mood4" name="mood" value="4">
+            <label for="mood4">4</label>
+            <input type="radio" id="mood5" name="mood" value="5">
+            <label for="mood5">5</label>
+            <input type="radio" id="mood6" name="mood" value="6">
+            <label for="mood6">6</label>
+            <input type="radio" id="mood7" name="mood" value="7">
+            <label for="mood7">7</label>
+            <input type="radio" id="mood8" name="mood" value="8">
+            <label for="mood8">8</label>
+            <input type="radio" id="mood9" name="mood" value="9">
+            <label for="mood9">9</label>
+            <input type="radio" id="mood10" name="mood" value="10">
+            <label for="mood10">10</label>
           </div>
         </div>
-      </div>
+
+        <button
+          type="submit"
+          name="journal-submit-btn"
+          id="journal-submit-btn"
+          class="btn-main"
+        >
+          Submit
+        </button>
+      </form>
     </section>
-    <style>
-        .modal {
-          display: none; /* Hidden by default */
-          position: fixed; /* Stay in place */
-          z-index: 1; /* Sit on top */
-          left: 0;
-          top: 0;
-          width: 100%; /* Full width */
-          height: 100%; /* Full height */
-          overflow: auto; /* Enable scroll if needed */
-          background-color: rgb(0,0,0); /* Fallback color */
-          background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+
+    <!-- Modal Section -->
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Your journal entry has been submitted successfully!</p>
+      </div>
+    </div>
+
+    <script>
+      // Modal functionality
+      const modal = document.getElementById("myModal");
+      const closeBtn = document.getElementsByClassName("close")[0];
+
+      closeBtn.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
         }
-        
-        .modal-content {
-          background-color: #fefefe;
-          margin: 15% auto; /* 15% from the top and centered */
-          padding: 20px;
-          border: 1px solid #888;
-          width: 80%; /* Could be more or less, depending on screen size */
-        }
-        
-        .close {
-          color: #aaa;
-          float: right;
-          font-size: 28px;
-          font-weight: bold;
-        }
-        
-        .close:hover,
-        .close:focus {
-          color: black;
-          text-decoration: none;
-          cursor: pointer;
-        }
-        </style>
-        
- 
-  
-    
-    
-<script>
-        
- 
-
-  
-
-// document.addEventListener("DOMContentLoaded", function() {
-//     const entryForm = document.querySelector(`#journalForm`);
-//     const entryResultsSection = document.querySelector(`#entryResultsSection`);
-//     const entryResultRow = document.querySelector(`.entryResultRow`);
-//     const getEntryTitle = document.querySelector(`.entry-text-title`);
-//     const getEntryText = document.querySelector(`.entry-text-box`);
-//     const modal = document.getElementById("journalModal");
-//     const closeModal = document.querySelector(".close");
-
- 
-//     function addEntryToDom(event) {
-//         event.preventDefault();
-
-       
- 
-
-//         const heading = document.createElement(`h2`);
-//         heading.className = `heading-results`;
-//         heading.textContent = `Journal Entries`;
-//         entryResultRow.insertAdjacentElement(`beforebegin`, heading);
-
-//         const entryDiv = document.createElement(`div`);
-//         entryDiv.className = `single-entry-div`;
-//         entryResultRow.appendChild(entryDiv);
-
-//         const entryHeading = document.createElement(`h3`);
-//         entryHeading.className = `single-entry-heading`;
-//         entryHeading.textContent = getEntryTitle.value;
-//         entryDiv.appendChild(entryHeading);
-
-//         const entryDate = document.createElement(`p`);
-//         entryDate.className = `single-entry-date`;
-//         entryDate.textContent = `Date Added: ${day} ${month} ${year}`;
-//         entryDiv.appendChild(entryDate);
-
-//         const entryParagraph = document.createElement(`p`);
-//         entryParagraph.className = `single-entry-text`;
-//         entryParagraph.textContent = getEntryText.value;
-//         entryDiv.appendChild(entryParagraph);
-
-//         getEntryText.value = ``;
-
-        
-//     }
-
-//     entryForm.addEventListener(`submit`, addEntryToDom);
-// });
-
-//     </script>
+      };
+    </script>
   </body>
 </html>

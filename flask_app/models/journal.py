@@ -92,9 +92,7 @@ class Journal():
 
         precision = true_positives / (true_positives + false_positives) if (true_positives + false_positives) > 0 else 0
         recall = true_positives / (true_positives + false_negatives) if (true_positives + false_negatives) > 0 else 0
-        accuracy = (true_positives+true_negatives) / (true_positives +true_negatives+ false_positives+false_negatives) if (true_positives +true_negatives+ false_positives+false_negatives) > 0 else 0
-
-
+        accuracy = (true_positives+true_negatives) / (true_positives +true_negatives+ false_positives+false_negatives) if(true_positives +true_negatives+ false_positives+false_negatives) > 0 else 0
         return {
             'precision': precision,
             'recall': recall,

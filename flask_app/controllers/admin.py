@@ -66,20 +66,20 @@ def new_blogpost():
             }
             Blog.save_image(image_data)
     
-       # Save the files
-    if 'files' in request.files:
-        file = request.files['files']
-        if file and allowed_file(file.filename):
-            file_content = file.read()  # Read the file content only once
-            file_data = {
-                'blog_id': blog_id,
-                'FileName': secure_filename(file.filename),
-                'FileType': file.content_type,
-                'FileSize': len(file_content),  # Calculate file size
-                'FileData': file_content,  # Store file content as binary
-                'UploadDate': datetime.now()
-            }
-            Blog.save_file(file_data)
+    #    # Save the files
+    # if 'files' in request.files:
+    #     file = request.files['files']
+    #     if file and allowed_file(file.filename):
+    #         file_content = file.read()  # Read the file content only once
+    #         file_data = {
+    #             'blog_id': blog_id,
+    #             'FileName': secure_filename(file.filename),
+    #             'FileType': file.content_type,
+    #             'FileSize': len(file_content),  # Calculate file size
+    #             'FileData': file_content,  # Store file content as binary
+    #             'UploadDate': datetime.now()
+    #         }
+    #         Blog.save_file(file_data)
     
  
     
@@ -106,8 +106,10 @@ def blogpost(id):
 
 @app.route('/loget')
 def logs():  
-    if 'user_id' not in session:
-        return redirect('/')
+
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/')       
+    
     data = {
         'id': session['user_id']
     }

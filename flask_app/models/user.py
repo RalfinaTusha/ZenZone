@@ -239,8 +239,44 @@ class User():
         if results:
             return results[0]['active_user_count'] if 'active_user_count' in results[0] else 0
         return 0
+    
+    @classmethod
+    def update_reminder(cls, data):
+        query = "UPDATE users SET remind = %(remind)s WHERE id = %(id)s;"
+        return connectToMySQL(cls.db_name).query_db(query, data)
+
 
  
+    #metode qe kthen te gjithe userat qe duhet te rikujtohen per te shkruar ditar
+    #kjo metode do te thirret cdo dite nga admini
+    @classmethod
+    def users_to_remind(cls):
+        query = '''SELECT * FROM users WHERE remind = 'yes' AND id NOT IN (SELECT user_id FROM journals WHERE DATE(created_at) = CURDATE()
+         GROUP BY user_id);'''
+        results = connectToMySQL(cls.db_name).query_db(query)
+        users = []
+        if results:
+            for user in results:
+                users.append(user)
+            return users
+        return users 
+ 
+
+    @classmethod
+    def low_mood_users(cls):
+        query = '''SELECT * FROM users WHERE id IN (SELECT user_id FROM (
+        SELECT user_id, rate, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at DESC) AS rn 
+        FROM journals
+    ) AS last_journals
+    WHERE rn <= 7
+    GROUP BY user_id
+    HAVING COUNT(*) = 1 AND MAX(rate) < 5);'''
+        results = connectToMySQL(cls.db_name).query_db(query)
+        users = []
+        if results:
+            for user in results:
+                users.append(user)
+            return users
 
  
  

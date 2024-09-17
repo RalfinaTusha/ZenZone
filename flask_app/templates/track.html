@@ -80,26 +80,23 @@
             <a class="nav-link" href="/trackmood">Mood Calendar View</a>
         </nav>
 
-        <!-- Mood Timeline Section -->
         <div class="card mt-4">
             <h1>Your Mood Timeline</h1>
             <canvas id="moodChart" width="800" height="400"></canvas>
         </div>
     </div>
 
-    <!-- Chart.js -->
-    <script>
-        // Data passed from the Flask backend
-        const dates = {{ dates | tojson }};
+     <script>
+        dates = {{ dates | tojson }};
         const moodData = {{ mood_data | tojson }};
         const sentimentData = {{ sentiment_data | tojson }};
         
-        // Create the chart
+        // Krijimi i grafikut me Chart.js
         const ctx = document.getElementById('moodChart').getContext('2d');
         const moodChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: dates,  // X-axis labels
+                labels: dates,   
                 datasets: [
                     {
                         label: 'Mood Rating (1-10)',

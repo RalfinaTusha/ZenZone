@@ -20,7 +20,7 @@ class Log():
     
     @classmethod
     def get_all_logs(cls):
-        query = "SELECT logs.*, users.email AS created_by FROM logs LEFT JOIN users ON logs.user_id = users.id;"
+        query = "SELECT logs.*, users.email AS created_by FROM logs LEFT JOIN users ON logs.user_id = users.id order by created_at desc;"
         results = connectToMySQL(cls.db_name).query_db(query)
         logs = []
         if results:

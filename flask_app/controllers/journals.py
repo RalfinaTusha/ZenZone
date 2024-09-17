@@ -116,9 +116,7 @@ def trackmood():
         'id': session['user_id']
     }
     user = User.get_user_by_id(data)
-    journals = Journal.get_all_journals()
-
-    # Extract mood and sentiment data
+    journals = Journal.get_all_journals()  
     mood_data = []
     sentiment_data = []
     dates = []
@@ -126,7 +124,6 @@ def trackmood():
     for journal in journals:
         dates.append(journal['created_at'])  
         mood_data.append(journal['rate'])  
-     # Convert 'positive'/'negative' into 1 and -1
         if journal['annotation'] == 'positive':
             sentiment_data.append(1)
         elif journal['annotation'] == 'negative':
@@ -157,20 +154,18 @@ def trackinsights():
         rating = journal['rate']
         mood_data.append(rating)
         total_rating += rating
-        
-        # Convert 'positive'/'negative' into 1 and -1
+
         if journal['annotation'] == 'positive':
             sentiment_data.append(1)
             positive_count += 1
         elif journal['annotation'] == 'negative':
             sentiment_data.append(-1)
         else:
-            sentiment_data.append(0)  # Optional: handle neutral or other cases
+            sentiment_data.append(0)   
         
         if rating > 7:
             rate_over_7_count += 1
-
-    # Calculate metrics
+ 
     total_journals = len(journals)
     avg_mood_rating = total_rating / total_journals if total_journals > 0 else 0
     positive_sentiment_percentage = (positive_count / total_journals * 100) if total_journals > 0 else 0
