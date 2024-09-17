@@ -46,12 +46,12 @@ def journals():
     user = User.get_user_by_id(data)
     return render_template('journal.html', user=user, journals = Journal.get_all_journals())
 
-# Load the SVM model and TF-IDF vectorizer
-svm_model = joblib.load('flask_app/model/flask_app/model/svm_model.pkl')
-tfidf_vectorizer = joblib.load('flask_app/model/flask_app/model/tfidf_vectorizer.pkl')
+
+
+
 
 def preprocess(text):
-    stop_words = open('C:/Users/Ralfi/Desktop/zenzone/flask_app/controllers/stopwords.txt', 'r', encoding='utf-8').read().split()
+    stop_words = open('C:/Users/Ralfi/Desktop/zenzone/flask_app/model/stopwords.txt', 'r', encoding='utf-8').read().split()
 
     # Remove URLs
     text = re.sub(r"http\S+|www\S+|https\S+", '', text, flags=re.MULTILINE)
@@ -64,24 +64,30 @@ def preprocess(text):
     text = [word.lower() for word in text_tokens if word.lower() not in stop_words]
     return " ".join(text)
 
+
+
+
+ 
+svm_model = joblib.load('flask_app/model/flask_app/model/svm_model.pkl')
+tfidf_vectorizer = joblib.load('flask_app/model/flask_app/model/tfidf_vectorizer.pkl')
+
+
 @app.route('/journal/new', methods=['POST'])
 def new_journal():
     if 'user_id' not in session:
         return redirect('/')
-
     description = request.form['description']
-    
+
     # Preprocess the description
     cleaned_description = preprocess(description)
-    
+
     # Transform the description using the TF-IDF vectorizer
     X = tfidf_vectorizer.transform([cleaned_description])
-    
+
     # Predict sentiment
     prediction = svm_model.predict(X)
-    
     sentiment = 'positive' if prediction[0] == 1 else 'negative'
-
+    
     data = {
         'user_id': session['user_id'],
         'description': description,
@@ -89,14 +95,13 @@ def new_journal():
         'title': request.form['entry-title'],
         'sentiment': sentiment  
     }
-    # mood = data.get('mood')
-    # if mood is None:
-    #     flash("Ju duhet të zgjidhni një vlerësim të humorit. Faleminderit!!!.", 'warning')
-    #     return redirect('/journals')
+    mood = data.get('mood')
+    if mood is None:
+        flash("Ju duhet të zgjidhni një vlerësim të humorit. Faleminderit!!!.", 'warning')
+        return redirect('/journals')
     
     if not Journal.validate_journal(data):
         return redirect('/journals')
-    
     Journal.create_journal(data)
     new_log_data = {
     'id':  session['user_id'],

@@ -21,7 +21,6 @@ df_review = pd.read_csv("review.csv")
 # Preprocess the Review Data
 def preprocess(text):
     stop_words = open('stopwords.txt','r', encoding='utf-8').read().split()
-
     # Remove urls
     text = re.sub(r"http\S+|www\S+|https\S+", '', text, flags=re.MULTILINE)
     # Remove user @ references and '#' from text
@@ -46,28 +45,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 # Train the SVM Model
 svm_model = SVC(kernel='linear')
 svm_model.fit(X_train, y_train)
-
-# Make Predictions on the Test Set
-y_pred = svm_model.predict(X_test)
-
-# Evaluate the Model's Performance
-accuracy = accuracy_score(y_test, y_pred)
-print("Accuracy: {:.2f}%".format(accuracy * 100))
-print(confusion_matrix(y_test, y_pred))
-print("\n")
-print(classification_report(y_test, y_pred))
-
-# Visualize the Confusion Matrix
-cm = confusion_matrix(y_test, y_pred)
-classes = ['positive', 'negative']
-
-plt.figure(figsize=(8, 6))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=classes, yticklabels=classes)
-plt.xlabel('Predicted Label')
-plt.ylabel('True Label')
-plt.title('Confusion Matrix')
-plt.show()
-os.makedirs('flask_app/model', exist_ok=True)
 
  
 # Save the Model and Vectorizer
